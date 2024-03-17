@@ -1,6 +1,10 @@
 name: Test Helm Package and Push
 
 on: [push]
+env:
+  chart_dir: './test-chart'
+  version: '1.0.0'
+  registry_url: 'us-east1-docker.pkg.dev/face-swipe-app'
 
 jobs:
   test-helm-action:
@@ -16,11 +20,13 @@ jobs:
       
       - name: Configure Docker to use the gcloud command-line tool as a credential helper
         run: |
-          gcloud auth configure-docker
+        gcloud auth application-default print-access-token | helm registry login -u oauth2accesstoken \
+        --password-stdin  https://${{ env.registry_url }}
 
       - name: Run Helm Package and Push Action
         uses: ./ # Assuming the action is in the current repository
         with:
-          chart_dir: './test-chart'
-          version: '1.0.0'
-          registry_url: 'us-east1-docker.pkg.dev/face-swipe-app'
+          chart_dir: ${{ env.chart_dir }}
+          version: ${{ env.version }}
+          registry_url: ${{ env.registry_url }}
+          
