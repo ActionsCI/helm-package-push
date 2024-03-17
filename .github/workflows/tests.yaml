@@ -23,5 +23,5 @@ jobs:
         with:
           chart_dir: './test-chart'
           version: '1.0.0'
-          registry_url: 'gcr.io/face-swipe-app/test-chart'
+          registry_url: 'us-east1-docker.pkg.dev/face-swipe-app/test-chart'
           token: '${{ secrets.GCR_TOKEN }}'
