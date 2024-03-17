@@ -10,9 +10,6 @@ inputs:
   registry_url:
     description: 'Helm registry URL to push the packaged chart.'
     required: true
-  token:
-    description: 'Token for logging into the Helm registry.'
-    required: true
 
 runs:
   using: 'composite'
@@ -23,24 +20,19 @@ runs:
         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
         chmod 700 get_helm.sh
         ./get_helm.sh
-        
+
     - name: Helm dependency build
       shell: bash
       run: |
         helm dependency build ${{ inputs.chart_dir }}
-        
+
     - name: Package Helm Chart
       shell: bash
       run: |
-        helm package ${{ inputs.chart_dir }} --version ${{ inputs.version }} --app-version ${{ inputs.version }}
-        
-    - name: Log in to the Registry
-      shell: bash
-      run: |
-        echo ${{ inputs.token }} | helm registry login ${{ inputs.registry_url }} --username USERNAME --password-stdin
-        
+        CHART_PACKAGE=$(helm package ${{ inputs.chart_dir }} --version ${{ inputs.version }} --app-version ${{ inputs.version }} | awk '{print $NF}')
+        echo "Packaged chart saved to: $CHART_PACKAGE"
+
     - name: Push Helm Chart to Registry
       shell: bash
       run: |
-        CHART_PACKAGE=$(helm package ${{ inputs.chart_dir }} --version ${{ inputs.version }} | cut -d ":" -f 2 | xargs)
-        helm push $CHART_PACKAGE oci://${{ inputs.registry_url }}
+        helm push "$CHART_PACKAGE" oci://${{ inputs.registry_url }}
