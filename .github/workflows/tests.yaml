@@ -20,7 +20,7 @@ jobs:
           gcloud auth configure-docker
 
       - name: Run Helm Package and Push Action
-        uses: ./ # Assuming the action is in the current repository
+        uses: ./action.yaml # Assuming the action is in the current repository
         with:
           chart_dir: './test-chart'
           version: '1.0.0'
