@@ -9,11 +9,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud
+        - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
         with:
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          project_id: face-swipe-app
+          credentials_json: ' ${{ secrets.GCP_SA_KEY }}'
       
       - name: Configure Docker to use the gcloud command-line tool as a credential helper
         run: |
