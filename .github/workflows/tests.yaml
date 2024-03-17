@@ -1,0 +1,28 @@
+name: Test Helm Package and Push
+
+on: [push]
+
+jobs:
+  test-helm-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: face-swipe-app
+      
+      - name: Configure Docker to use the gcloud command-line tool as a credential helper
+        run: |
+          gcloud auth configure-docker
+
+      - name: Run Helm Package and Push Action
+        uses: ./ # Assuming the action is in the current repository
+        with:
+          chart_dir: './test-chart'
+          version: '1.0.0'
+          registry_url: 'gcr.io/face-swipe-app/test-chart'
+          token: '${{ secrets.GCR_TOKEN }}'
