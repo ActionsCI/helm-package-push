@@ -22,6 +22,7 @@ jobs:
         run: |
           gcloud auth application-default print-access-token | helm registry login -u oauth2accesstoken \
           --password-stdin  https://${{ env.registry_url }}
+          gcloud auth configure-docker
 
       - name: Run Helm Package and Push Action
         uses: ./ # Assuming the action is in the current repository
