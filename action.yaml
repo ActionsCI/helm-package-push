@@ -35,4 +35,6 @@ runs:
     - name: Push Helm Chart to Registry
       shell: bash
       run: |
-        helm push "$CHART_PACKAGE" oci://${{ inputs.registry_url }}
+        # yq used to get chart.yaml name and set to $CHAR_NAME
+        CHART_NAME=$(yq r ${{ inputs.chart_dir }}/Chart.yaml name)
+        helm push "${CHART_NAME}-${{ inputs.version }}.tgz" oci://${{ inputs.registry_url }}
