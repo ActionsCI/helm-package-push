@@ -37,4 +37,6 @@ runs:
       run: |
         # yq used to get chart.yaml name and set to $CHAR_NAME
         CHART_NAME=$(yq e '.name' ${{ inputs.chart_dir }}/Chart.yaml)
+        echo "Pushing chart to registry: $CHART_NAME"
+        echo "helm push ${CHART_NAME}-${{ inputs.version }}.tgz oci://${{ inputs.registry_url }}"
         helm push "${CHART_NAME}-${{ inputs.version }}.tgz" oci://${{ inputs.registry_url }}
