@@ -20,9 +20,8 @@ jobs:
       
       - name: Configure Docker to use the gcloud command-line tool as a credential helper
         run: |
-          gcloud auth application-default print-access-token | helm registry login -u oauth2accesstoken \
-          --password-stdin  https://${{ env.registry_url }}
-          gcloud auth configure-docker
+          echo -n ${{ secrets.GCP_SA_KEY }} | \
+        	helm registry login -u "_json_key_base64" --password-stdin "https://${{ env.registry_url }}"
 
       - name: Run Helm Package and Push Action
         uses: ./ # Assuming the action is in the current repository
